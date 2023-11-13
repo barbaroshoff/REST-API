@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - ${PORT_NGINX}:80
+    depends_on:
+      - php
+    networks:
+      - mynetwork
+
+  mysql:
+    build:
+      context: ./mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    networks:
+      - mynetwork
+
+  php:
+    build:
+      context: ./php
+    volumes:
+      - ../project:/var/www
+    ports:
+      - ${PORT_PHPFPM}:9000
+    depends_on:
+      - mysql
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
